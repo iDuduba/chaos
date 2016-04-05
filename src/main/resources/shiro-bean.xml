@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="  
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd  
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd  
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd  
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       
+    <!-- 缓存管理器 使用Ehcache实现 -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml" />
+    </bean>
+    
+    <bean id="shiroRealm" class="wang.laic.chaos.security.ShiroRealm" />
+    
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="shiroRealm" />
+        <property name="cacheManager" ref="cacheManager" />
+    </bean>
+    
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    	<property name="securityManager" ref="securityManager"/>
+	    <!-- override these for application-specific URLs if you like: -->
+  	  <property name="loginUrl" value="/login"/>
+    	<property name="successUrl" value="/index.html"/>
+    	<property name="unauthorizedUrl" value="/403.html"/>
+	
+	    <property name="filterChainDefinitions">
+        <value>
+        	 # 无需认证便可以访问的的文件放在前面
+					/login = anon
+					/logout = logout
+          
+            # some example chain definitions:
+            /admin/** = authc, roles[admin]
+            /docs/** = authc, perms[document:read]
+            
+            /** = authc, roles[admin]
+        </value>
+  	  </property>
+		</bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    
+    <!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+		<!-- the lifecycleBeanProcessor has run: -->
+		<!-- 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证 -->
+    <!-- 这里要配置以下两个bean,在这之前要配置好lifecycleBeanPostProcessor-->
+		<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" 
+					depends-on="lifecycleBeanPostProcessor">
+					<!-- 参考http://www.cnblogs.com/digdeep/p/4624998.html 会发现上面错误是 Spring AOP 不同配置方式产生的冲突问题 -->
+					<property name="proxyTargetClass" value="true"/> 
+		</bean>
+		<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		    <property name="securityManager" ref="securityManager"/>
+		</bean>
+
+</beans>
