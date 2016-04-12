@@ -141,7 +141,7 @@
 				<configuration>  
 					<verbose>true</verbose>  
 					<overwrite>true</overwrite>  
-        </configuration>  
+        		</configuration>  
 				<dependencies>  
 					<dependency>  
 						<groupId>wang.deng</groupId>

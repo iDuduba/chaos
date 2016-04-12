@@ -38,6 +38,11 @@ spring:
     request-context-attribute: request
   devtools:
     restart.exclude: static/**,public/**  # 只有static目录和public目录下的内容修改后不会引起重启
-      
 
+multipart:
+  maxFileSize: 3Mb  # Set the file size limit (default 1Mb). If you want to specify that files be unlimited set the multipart.maxFileSize property to -1.
+  maxRequestSize: 10Mb  # Set the total request size for a multipart/form-data (default 10Mb)
+  
+chaos:
+  paths.uploadedFiles: /tmp/upload 
   
