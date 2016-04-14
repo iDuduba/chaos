@@ -61,12 +61,13 @@
 	  </javaClientGenerator>
 
 		<table tableName="t_user" domainObjectName="User">
+			<!-- <generatedKey column="id" sqlStatement="Mysql" identity="true"/>  -->
+			<generatedKey column="id" sqlStatement="select uuid()"/>
+			<ignoreColumn column="modified_date"/>
+		</table>
+<!-- 		<table tableName="t_role" domainObjectName="Role">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true"/> 
 			<ignoreColumn column="modified_date"/>
 		</table>
-		<table tableName="t_role" domainObjectName="Role">
-			<generatedKey column="id" sqlStatement="Mysql" identity="true"/> 
-			<ignoreColumn column="modified_date"/>
-		</table>
-	</context>
+ -->	</context>
 </generatorConfiguration>

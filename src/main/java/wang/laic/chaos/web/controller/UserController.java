@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 
 import lombok.extern.slf4j.Slf4j;
 import wang.laic.chaos.model.User;
@@ -47,7 +48,7 @@ public class UserController {
     }
     
     @RequestMapping(value = "/view/{id}")
-    public ModelAndView view(@PathVariable Integer id) {
+    public ModelAndView view(@PathVariable String id) {
         ModelAndView result = new ModelAndView("view");
         User user = userService.getById(id);
         result.addObject("user", user);
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public ModelAndView delete(@PathVariable Integer id, RedirectAttributes ra) {
+    public ModelAndView delete(@PathVariable String id, RedirectAttributes ra) {
         ModelAndView result = new ModelAndView("redirect:/users");
         userService.deleteByPrimaryKey(id);
         ra.addFlashAttribute("msg", "删除成功!");
@@ -65,8 +66,8 @@ public class UserController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ModelAndView save(User user) {
         ModelAndView result = new ModelAndView("view");
-        String msg = user.getId() == null ? "新增成功!" : "更新成功!";
-        userService.save(user);
+        String msg = Strings.isNullOrEmpty(user.getId()) ? "新增成功!" : "更新成功!";
+       	userService.save(user);
         result.addObject("user", user);
         result.addObject("msg", msg);
         return result;

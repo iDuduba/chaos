@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Strings;
 
 import wang.laic.chaos.mapper.UserMapper;
 import wang.laic.chaos.model.User;
@@ -31,7 +32,7 @@ public class UserService {
 //        return userMapper.selectAll();
 	}
 	
-    public User getById(Integer id) {
+    public User getById(String id) {
         return userMapper.selectByPrimaryKey(id);
     }
     
@@ -42,14 +43,14 @@ public class UserService {
     	return users.get(0);
     }
     
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(String id) {
     	return userMapper.deleteByPrimaryKey(id);
     }
     
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public int save(User user) {
     	int result;
-        if (user.getId() != null) {
+        if (!Strings.isNullOrEmpty(user.getId())) {
 //        	result = userMapper.updateByPrimaryKey(user);
         	result = userMapper.updateByPrimaryKeySelective(user);
         	if(user.getPassword().compareTo("111111") == 0) {

@@ -32,7 +32,7 @@ package wang.laic.chaos.model;
  */
 public class BaseEntity {
 
-    private Integer id;
+    private String id;
 
 
     private Integer page = 1;
@@ -40,11 +40,11 @@ public class BaseEntity {
 
     private Integer rows = 10;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
